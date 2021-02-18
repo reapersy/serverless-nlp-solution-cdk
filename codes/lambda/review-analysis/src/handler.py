@@ -22,4 +22,19 @@ def get_comprehend():
 def get_kinesis():
     global _kinesis
     if _kinesis is None:
-        _kinesis = boto3.clien
+        _kinesis = boto3.client('kinesis')
+    return _kinesis
+
+
+def batch_detect(batch_array: list):
+    reviews = [item['Review'] for item in batch_array]
+    
+    try:
+        comp = get_comprehend()
+        response_entities = comp.batch_detect_entities(
+                    TextList=reviews,
+                    LanguageCode='en'
+                )
+        response_syntax = comp.batch_detect_syntax(
+                    TextList=reviews,
+                    LanguageCode='en
