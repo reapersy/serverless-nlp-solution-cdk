@@ -37,4 +37,12 @@ def batch_detect(batch_array: list):
                 )
         response_syntax = comp.batch_detect_syntax(
                     TextList=reviews,
-                    LanguageCode='en
+                    LanguageCode='en'
+                )
+        
+        records = []
+        for index, item in enumerate(reviews):
+            batch_array[index]['Entities'] = json.loads(json.dumps(response_entities['ResultList'][index]['Entities']), parse_float=Decimal)
+            batch_array[index]['Syntax'] = json.loads(json.dumps(response_syntax['ResultList'][index]['SyntaxTokens']), parse_float=Decimal)
+            records.append({
+                'Data': json.dumps(
