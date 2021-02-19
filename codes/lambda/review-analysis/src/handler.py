@@ -45,4 +45,20 @@ def batch_detect(batch_array: list):
             batch_array[index]['Entities'] = json.loads(json.dumps(response_entities['ResultList'][index]['Entities']), parse_float=Decimal)
             batch_array[index]['Syntax'] = json.loads(json.dumps(response_syntax['ResultList'][index]['SyntaxTokens']), parse_float=Decimal)
             records.append({
-                'Data': json.dumps(
+                'Data': json.dumps(batch_array[index], default=str),
+                'PartitionKey': batch_array[index]['ProductId']
+            })
+            
+        get_kinesis().put_records(
+                StreamName=_stream_name,
+                Records=records
+            )
+    except ClientError as e:
+        print('[EXCEPT] batch_detect', e)
+        raise e
+
+
+def process_batch(input_array: list):
+    batch_size = _stream_batch_size
+    batch_array = []
+    last_batch_in
