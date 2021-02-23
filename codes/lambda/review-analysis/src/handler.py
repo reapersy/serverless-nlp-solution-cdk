@@ -61,4 +61,19 @@ def batch_detect(batch_array: list):
 def process_batch(input_array: list):
     batch_size = _stream_batch_size
     batch_array = []
-    last_batch_in
+    last_batch_index = 0
+        
+    for index, line in enumerate(input_array):
+        if len(batch_array) < batch_size:
+            batch_array.append(line)
+            if len(batch_array) == batch_size:
+                batch_detect(batch_array)
+                last_batch_index += batch_size
+                batch_array.clear()
+                
+    if len(batch_array) > 0:
+        batch_detect(batch_array)
+    
+
+def handle(event, context):
+    # print('event==>', json.dumps(event, indent=4)
