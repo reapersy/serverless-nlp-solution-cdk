@@ -76,4 +76,13 @@ def process_batch(input_array: list):
     
 
 def handle(event, context):
-    # print('event==>', json.dumps(event, indent=4)
+    # print('event==>', json.dumps(event, indent=4))
+    # print('event==>', len(event['Records']))
+    # print('event==>', json.dumps(event['Records'][0], indent=4))
+    
+    batch_array = []
+    for record in event['Records']:
+        if record['eventSource'] == 'aws:dynamodb' and record['eventName'] == 'INSERT':
+            id = record['dynamodb']['NewImage']['ProductId']['S']
+            ts = record['dynamodb']['NewImage']['ReviewId']['S']
+            timestamp = record['dynamodb']['NewImage']['Timestamp'
