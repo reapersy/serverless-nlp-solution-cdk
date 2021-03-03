@@ -85,4 +85,13 @@ def handle(event, context):
         if record['eventSource'] == 'aws:dynamodb' and record['eventName'] == 'INSERT':
             id = record['dynamodb']['NewImage']['ProductId']['S']
             ts = record['dynamodb']['NewImage']['ReviewId']['S']
-            timestamp = record['dynamodb']['NewImage']['Timestamp'
+            timestamp = record['dynamodb']['NewImage']['Timestamp']['N']
+            review = record['dynamodb']['NewImage']['Review']['S']
+            
+            temp = record['dynamodb']['NewImage']['Sentiment']['M']
+            sentiment = {
+                'Sentiment': temp['Sentiment']['S'],
+                'SentimentScore': {
+                    'Neutral': temp['SentimentScore']['M']['Neutral']['N'],
+                    'Negative': temp['SentimentScore']['M']['Negative']['N'],
+                    'Positi
