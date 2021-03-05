@@ -1,2 +1,15 @@
 {
-    
+    "Records": [
+        {
+            "eventID": "e1e5009db892e80162d3c41d123883e5",
+            "eventName": "INSERT",
+            "eventVersion": "1.1",
+            "eventSource": "aws:dynamodb",
+            "awsRegion": "eu-central-1",
+            "dynamodb": {
+                "ApproximateCreationDateTime": 1662658061.0,
+                "Keys": {
+                    "id": {
+                        "S": "id-001"
+                    },
+      
