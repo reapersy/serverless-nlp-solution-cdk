@@ -94,4 +94,17 @@ def handle(event, context):
                 'SentimentScore': {
                     'Neutral': temp['SentimentScore']['M']['Neutral']['N'],
                     'Negative': temp['SentimentScore']['M']['Negative']['N'],
-                    'Positi
+                    'Positive': temp['SentimentScore']['M']['Positive']['N'],
+                    'Mixed': temp['SentimentScore']['M']['Mixed']['N']
+                }
+            }
+            
+            batch_array.append({
+                'ProductId': id,
+                'ReviewId': ts,
+                'Timestamp': timestamp,
+                'Review': review,
+                'Sentiment': sentiment
+            })
+            
+    process_batch(batch_array)
