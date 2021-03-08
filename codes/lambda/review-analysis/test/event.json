@@ -31,4 +31,15 @@
                                         "N": "0.003383016213774681"
                                     },
                                     "Mixed": {
-                                        "N": "0.0036034041550010443
+                                        "N": "0.0036034041550010443"
+                                    }
+                                }
+                            },
+                            "Sentiment": {
+                                "S": "NEGATIVE"
+                            }
+                        }
+                    },
+                    "review": {
+                        "S": "Written in old English. It was very hard to read as I had to think through most sentences to figure out what was being said."
+          
