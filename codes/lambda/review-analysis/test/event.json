@@ -42,4 +42,16 @@
                     },
                     "review": {
                         "S": "Written in old English. It was very hard to read as I had to think through most sentences to figure out what was being said."
-          
+                    },
+                    "id": {
+                        "S": "id-001"
+                    },
+                    "timestamp": {
+                        "S": "2022/09/08-17:27:41"
+                    },
+                    "ts": {
+                        "S": "2022/09/08-17:27:41-8ad4907d2f9b11ed94c5b3eb21dfcac5"
+                    }
+                },
+                "SequenceNumber": "18527500000000010191845903",
+      
