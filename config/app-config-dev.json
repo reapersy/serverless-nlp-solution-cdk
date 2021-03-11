@@ -1,0 +1,11 @@
+{
+    "Project": {
+        "Name": "ReviewService",
+        "Stage": "Dev",
+        "Account": "your-account-number",
+        "Region": "your-region-name",
+        "Profile": "your-profile-name"
+    },
+
+    "Global": {
+        "CdkNagEnable
