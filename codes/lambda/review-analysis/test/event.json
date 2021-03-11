@@ -54,4 +54,10 @@
                     }
                 },
                 "SequenceNumber": "18527500000000010191845903",
-      
+                "SizeBytes": 399,
+                "StreamViewType": "NEW_IMAGE"
+            },
+            "eventSourceARN": "arn:aws:dynamodb:eu-central-1:1111********:table/ReviewServiceDev-ReviewHistoryTable/stream/2022-09-04T16:54:30.930"
+        }
+    ]
+}
