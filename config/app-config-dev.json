@@ -8,4 +8,19 @@
     },
 
     "Global": {
-        "CdkNagEnable
+        "CdkNagEnable": false
+    },
+
+    "Stack": {
+        "AllInOne": {
+            "Name": "AllInOneStack",
+
+            "Props": {
+                "ApiGatewayName": "ReviewApis",
+                
+                "ReviewBackendLambdaName": "ReviewBackend",
+                "ReviewHistoryTableName": "ReviewHistoryTable",
+                
+                "ReviewAnalysisLambdaName": "ReviewAnalysis",
+                "ReviewEntitiesTableName": "ReviewEntitiesTable",
+         
