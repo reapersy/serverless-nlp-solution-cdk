@@ -35,4 +35,19 @@
                 "LambdaFuncName": "BackendFunc",
                 "LambdaFuncMemory": 128,
                 "LambdaFuncCode": "codes/lambda/review-backend/src",
-               
+                "LambdaFuncHandler": "handler.handle"
+            },
+
+            "DdbConfig": {
+                "DdbTableName": "ReviewHistoryTable",
+                "DdbTablePartitionKey": "ProductId",
+                "DdbTableSortKey": "ReviewId"
+            }
+        },
+        "ApiGateway": {
+            "Name": "ApiGatewayStack",
+
+            "ApiConfig": {
+                "ApiGatewayName": "ReviewApis",
+                "ResourceMapping": [
+                
