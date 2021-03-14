@@ -23,4 +23,16 @@
                 
                 "ReviewAnalysisLambdaName": "ReviewAnalysis",
                 "ReviewEntitiesTableName": "ReviewEntitiesTable",
-         
+                "ReviewSyntaxTableName": "ReviewSyntaxTable",
+                "TemplateFile": "infra/stack/AthenaDynamoDBConnector.yaml"
+            }
+            
+        },
+        "ReviewBackend": {
+            "Name": "ReviewBackendStack",
+
+            "LambdaConfig": {
+                "LambdaFuncName": "BackendFunc",
+                "LambdaFuncMemory": 128,
+                "LambdaFuncCode": "codes/lambda/review-backend/src",
+               
