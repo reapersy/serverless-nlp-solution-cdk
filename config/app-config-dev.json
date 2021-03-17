@@ -50,4 +50,20 @@
             "ApiConfig": {
                 "ApiGatewayName": "ReviewApis",
                 "ResourceMapping": [
-                
+                    {
+                        "ResourceName": "review",
+                        "LambdaFuncName": "BackendFunc",
+                        "Methods": ["POST"]
+                    }
+                ]
+            },
+
+            "CognitoConfig": {
+                "CognitoUserPoolName": "ReviewUserPool"
+            },
+
+            "WafConfig": {
+                "WebAclName": "Waf",
+                "WafAwsManagedRules": [
+                    "AWSManagedRulesCommonRuleSet"
+                ]
