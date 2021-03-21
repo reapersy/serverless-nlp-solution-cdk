@@ -67,3 +67,17 @@
                 "WafAwsManagedRules": [
                     "AWSManagedRulesCommonRuleSet"
                 ]
+            }
+        },
+        "ReviewAnalysis": {
+            "Name": "ReviewAnalysisStack",
+
+            "LambdaConfig": {
+                "LambdaFuncName": "AnalysisFunc",
+                "LambdaFuncMemory": 128,
+                "LambdaFuncCode": "codes/lambda/review-analysis/src",
+                "LambdaFuncHandler": "handler.handle",
+                "LambdaFuncBatch": 10,
+                "LambdaFuncWindow": 1,
+                "StreamBatchSize": "10"
+        
