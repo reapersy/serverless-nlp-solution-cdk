@@ -80,4 +80,19 @@
                 "LambdaFuncBatch": 10,
                 "LambdaFuncWindow": 1,
                 "StreamBatchSize": "10"
-        
+            },
+
+            "KinesisConfig": {
+                "KinesisStreamName": "Stream",
+                "KinesisFireHoseName": "Hose",
+                "KinesisBucketName": "kinesis"
+            },
+
+            "GlueConfig": {
+                "GlueDatabaseName": "Analysis-Database",
+                "GlueTableName": "Comprehend-Table"
+            },
+
+            "AthenaConfig": {
+                "AtheanGroupName": "Group",
+                "AtheanBucketN
