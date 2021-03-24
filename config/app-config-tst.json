@@ -1,7 +1,8 @@
+
 {
     "Project": {
         "Name": "ReviewService",
-        "Stage": "Dev",
+        "Stage": "Tst",
         "Account": "your-account-number",
         "Region": "your-region-name",
         "Profile": "your-profile-name"
