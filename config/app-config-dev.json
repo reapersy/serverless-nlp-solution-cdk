@@ -95,4 +95,18 @@
 
             "AthenaConfig": {
                 "AtheanGroupName": "Group",
-                "AtheanBucketN
+                "AtheanBucketName": "athena",
+                "AtheanQuerySentiment": "sentiment-table",
+                "AtheanQueryEntities": "entities-table",
+                "AtheanQuerySyntax": "syntax-table"
+            }
+        },
+        "ReviewDashboard": {
+            "Name": "ReviewDashboardStack",
+
+            "DashboardName": "ReviewDashboard",
+
+            "SubscriptionEmails": ["your-email-address"],
+
+            "ApiGatewayOverallCallThreshold": 100,
+            "ApiGatewayError4xxCallThreshol
