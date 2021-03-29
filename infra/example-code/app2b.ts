@@ -29,3 +29,17 @@ class MyFirstStack extends Stack {
         super(scope, id);
         new lambda.Function(this, 'lambda-func', {
             runtime: lambda.Runtime.PYTHON_3_9,
+            handler: 'handler.handle',
+            code: lambda.Code.fromAsset(codeAsseet)
+        });
+    }
+}
+
+const app = new App();
+
+new MyFirstStack(app, `${prefix}-hello-cdk`, {
+    env
+});
+
+
+
