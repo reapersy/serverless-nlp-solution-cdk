@@ -10,4 +10,22 @@ let codeAsseet = '';
 let env = {};
 if (stage == 'dev') {
     prefix = 'ReviewServiceDev';
-    code
+    codeAsseet = 'codes/ver1';
+    env = {
+        account: '111111111111',
+        region: 'eu-central-1'
+    }
+} else {
+    prefix = 'ReviewServicePrd';
+    codeAsseet = 'codes/ver2';
+    env = {
+        account: '222222222222',
+        region: 'us-east-1'
+    }
+}
+
+class MyFirstStack extends Stack {
+    constructor(scope: Construct, id: string, props: StackProps) {
+        super(scope, id);
+        new lambda.Function(this, 'lambda-func', {
+            runtime: lambda.Runtime.PYTHON_3_9,
