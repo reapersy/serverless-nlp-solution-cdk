@@ -10,4 +10,28 @@ import { CognitoToApiGatewayToLambda } from "@aws-solutions-constructs/aws-cogni
 
 import * as base from '../../lib/template/stack/base/base-stack';
 import { AppContext } from '../../lib/template/app-context';
-import { StackCo
+import { StackConfig } from '../../lib/template/app-config';
+
+
+interface ResourceMapping {
+    ResourceName: string;
+    LambdaFuncName: string;
+    Methods: string[];
+}
+
+interface ApiConfig {
+    ApiGatewayName: string;
+    ResourceMapping: ResourceMapping[];
+}
+
+interface CognitoConfig {
+    CognitoUserPoolName: string;
+}
+
+interface WafConfig {
+    WebAclName: string;
+    WafAwsManagedRules: string[];
+}
+
+export interface ApiGatewayStackConfig extends StackConfig {
+    ApiConfig:
