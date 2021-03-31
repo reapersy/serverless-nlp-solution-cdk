@@ -34,4 +34,19 @@ interface WafConfig {
 }
 
 export interface ApiGatewayStackConfig extends StackConfig {
-    ApiConfig:
+    ApiConfig: ApiConfig;
+    CognitoConfig: CognitoConfig;
+    WafConfig: WafConfig;
+}
+
+export class ApiGatewayStack extends base.BaseStack {
+    private credentialRole: iam.Role;
+
+    constructor(appContext: AppContext, stackConfig: ApiGatewayStackConfig) {
+        super(appContext, stackConfig);
+
+        const apiConfig = stackConfig.ApiConfig;
+        const cognitoConfig = stackConfig.CognitoConfig;
+        const wafConfig = stackConfig.WafConfig;
+
+        const apiLambda = ne
