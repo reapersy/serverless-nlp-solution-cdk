@@ -59,4 +59,16 @@ export class ApiGatewayStack extends base.BaseStack {
                 deployOptions: {
                     loggingLevel: apigateway.MethodLoggingLevel.ERROR,
                 },
-      
+            },
+            cognitoUserPoolProps: {
+                userPoolName: this.withStackName(cognitoConfig.CognitoUserPoolName),
+                passwordPolicy: {
+                    requireSymbols: true,
+                    minLength: 8,
+                    requireUppercase: true,
+                    requireDigits: true
+                }
+            },
+            cognitoUserPoolClientProps: {
+                authFlows: {
+                    userPassword: true,
