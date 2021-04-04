@@ -49,4 +49,14 @@ export class ApiGatewayStack extends base.BaseStack {
         const cognitoConfig = stackConfig.CognitoConfig;
         const wafConfig = stackConfig.WafConfig;
 
-        const apiLambda = ne
+        const apiLambda = new CognitoToApiGatewayToLambda(this, 'apigateway-cognito-lambda', {
+            apiGatewayProps: {
+                restApiName: this.withStackName(apiConfig.ApiGatewayName),
+                endpointConfiguration: {
+                    types: [apigateway.EndpointType.REGIONAL]
+                },
+                proxy: false,
+                deployOptions: {
+                    loggingLevel: apigateway.MethodLoggingLevel.ERROR,
+                },
+      
