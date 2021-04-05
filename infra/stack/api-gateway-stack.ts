@@ -72,3 +72,16 @@ export class ApiGatewayStack extends base.BaseStack {
             cognitoUserPoolClientProps: {
                 authFlows: {
                     userPassword: true,
+                    userSrp: true,
+                    custom: true,
+                }
+            },
+            existingLambdaObj: this.createDefaultHandler()
+        });
+
+        new WafwebaclToApiGateway(this, 'wafwebacl-apigateway', {
+            existingApiGatewayInterface: apiLambda.apiGateway,
+            webaclProps: this.createWafwebaclProps('REGIONAL', wafConfig.WafAwsManagedRules)
+        });
+
+        apiConfig.ResourceMapping.forEach(ite
