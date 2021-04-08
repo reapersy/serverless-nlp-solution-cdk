@@ -84,4 +84,11 @@ export class ApiGatewayStack extends base.BaseStack {
             webaclProps: this.createWafwebaclProps('REGIONAL', wafConfig.WafAwsManagedRules)
         });
 
-        apiConfig.ResourceMapping.forEach(ite
+        apiConfig.ResourceMapping.forEach(item => {
+            const resource = apiLambda.apiGateway.root.addResource(item.ResourceName);
+            this.addCorsOptions(resource);
+
+            const lambdaFuncArn = this.getParameter(`${item.LambdaFuncName}FunctionArn`);
+            const lambdaFunc = lambda.Function.fromFunctionArn(this, item.LambdaFuncName, lambdaFuncArn);
+            const lambdaFuncIntegration = new apigateway.LambdaIntegration(lambdaFunc, {
+                credentialsRole: this.getCredentialRole(item.Lambda
