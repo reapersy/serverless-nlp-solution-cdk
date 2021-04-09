@@ -91,4 +91,14 @@ export class ApiGatewayStack extends base.BaseStack {
             const lambdaFuncArn = this.getParameter(`${item.LambdaFuncName}FunctionArn`);
             const lambdaFunc = lambda.Function.fromFunctionArn(this, item.LambdaFuncName, lambdaFuncArn);
             const lambdaFuncIntegration = new apigateway.LambdaIntegration(lambdaFunc, {
-                credentialsRole: this.getCredentialRole(item.Lambda
+                credentialsRole: this.getCredentialRole(item.LambdaFuncName, lambdaFuncArn)
+            });
+            for (let method of item.Methods) {
+                resource.addMethod(method, lambdaFuncIntegration, {
+                    requestValidatorOptions: {validateRequestParameters: true} });
+            }
+        });
+        apiLambda.addAuthorizers();
+
+        this.putParameter('RestApiName', apiLambda.apiGateway.restApiName);
+        this.putParameter('UserPoolId', apiLambda.userPool.userPool
