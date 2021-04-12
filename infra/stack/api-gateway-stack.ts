@@ -112,4 +112,12 @@ export class ApiGatewayStack extends base.BaseStack {
         this.nagSuppressIAM5(apiLambda.apiGatewayCloudWatchRole!);
     }
 
-    private getCreden
+    private getCredentialRole(funcName: string, funcArn: string) {
+        if (this.credentialRole == undefined) {
+            this.credentialRole = new iam.Role(this, `integration-role`, {
+                roleName: this.withStackName('GatewayIntegrationRole'),
+                assumedBy: new iam.ServicePrincipal('apigateway.amazonaws.com'),
+            });
+        }
+        this.credentialRole.attachInlinePolicy(new iam.Policy(this, `${funcName}-integration-role-policy`, {
+ 
