@@ -101,4 +101,15 @@ export class ApiGatewayStack extends base.BaseStack {
         apiLambda.addAuthorizers();
 
         this.putParameter('RestApiName', apiLambda.apiGateway.restApiName);
-        this.putParameter('UserPoolId', apiLambda.userPool.userPool
+        this.putParameter('UserPoolId', apiLambda.userPool.userPoolId);
+        this.putParameter('UserPoolClientId', apiLambda.userPoolClient.userPoolClientId);
+
+        this.exportOutput('RestApiUrl', apiLambda.apiGateway.url);
+        this.exportOutput('UserPoolId', apiLambda.userPool.userPoolId);
+        this.exportOutput('UserPoolClientId', apiLambda.userPoolClient.userPoolClientId);
+
+        this.nagSuppressCOG2(apiLambda.userPool);
+        this.nagSuppressIAM5(apiLambda.apiGatewayCloudWatchRole!);
+    }
+
+    private getCreden
