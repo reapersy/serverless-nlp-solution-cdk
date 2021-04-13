@@ -120,4 +120,17 @@ export class ApiGatewayStack extends base.BaseStack {
             });
         }
         this.credentialRole.attachInlinePolicy(new iam.Policy(this, `${funcName}-integration-role-policy`, {
- 
+            statements: [
+                new iam.PolicyStatement({
+                    effect: iam.Effect.ALLOW,
+                    actions: ['lambda:InvokeFunction'],
+                    resources: [funcArn],
+                })
+            ]
+        }));
+        return this.credentialRole;
+    }
+
+    private createDefaultHandler(): lambda.Function {
+        const role = new iam.Role(this, 'default-func-role', {
+            assu
