@@ -133,4 +133,20 @@ export class ApiGatewayStack extends base.BaseStack {
 
     private createDefaultHandler(): lambda.Function {
         const role = new iam.Role(this, 'default-func-role', {
-            assu
+            assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+        });
+
+        const lambdaFunc = new lambda.Function(this, 'default-func', {
+            functionName: this.withStackName('DefaultFunc'),
+            runtime: lambda.Runtime.PYTHON_3_9,
+            handler: 'index.handle',
+            code: lambda.Code.fromInline(`
+import json
+def handle(event, context):
+    body_dict = {
+        'Status': 'fail',
+        'Message': 'not-defined resource'
+    }
+
+    return {
+    
