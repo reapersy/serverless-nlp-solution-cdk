@@ -149,4 +149,17 @@ def handle(event, context):
     }
 
     return {
-    
+        'statusCode': 200,
+        'headers': {'Content-Type': 'application/json'},
+        'body': json.dumps(body_dict)
+    }
+            `),
+            role
+        });
+
+        return lambdaFunc;
+    }
+
+    private createWafwebaclProps(webaclScope: string, awsManagedGroupNames: string[]) {
+        // https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-list.html
+        // aws wafv2 list-available-managed-rule-groups --scope=REG
