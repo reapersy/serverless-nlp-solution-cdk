@@ -162,4 +162,16 @@ def handle(event, context):
 
     private createWafwebaclProps(webaclScope: string, awsManagedGroupNames: string[]) {
         // https://docs.aws.amazon.com/waf/latest/developerguide/aws-managed-rule-groups-list.html
-        // aws wafv2 list-available-managed-rule-groups --scope=REG
+        // aws wafv2 list-available-managed-rule-groups --scope=REGIONAL
+        // https://github.com/awslabs/aws-solutions-constructs/blob/main/source/patterns/%40aws-solutions-constructs/core/lib/waf-defaults.ts
+        return {
+            defaultAction: {
+                allow: {}
+            },
+            scope: webaclScope,
+            visibilityConfig: {
+                cloudWatchMetricsEnabled: true,
+                metricName: 'webACL',
+                sampledRequestsEnabled: true
+            },
+            rules: awsManagedGrou
