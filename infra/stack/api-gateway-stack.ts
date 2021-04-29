@@ -174,4 +174,15 @@ def handle(event, context):
                 metricName: 'webACL',
                 sampledRequestsEnabled: true
             },
-            rules: awsManagedGrou
+            rules: awsManagedGroupNames.map((item, index) => {
+                return wrapManagedRuleSet(item, 'AWS', index)
+            })
+        };
+    }
+
+    private addCorsOptions(apiResource: apigateway.IResource) {
+        apiResource.addMethod('OPTIONS', new apigateway.MockIntegration({
+            integrationResponses: [{
+                statusCode: '200',
+                responseParameters: {
+                    'method.response.header.Access-Contr
