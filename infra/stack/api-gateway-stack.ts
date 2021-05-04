@@ -192,4 +192,16 @@ def handle(event, context):
             }],
             passthroughBehavior: apigateway.PassthroughBehavior.NEVER,
             requestTemplates: {
-     
+                "application/json": "{\"statusCode\": 200}"
+            },
+        }), {
+            methodResponses: [{
+                statusCode: '200',
+                responseParameters: {
+                    'method.response.header.Access-Control-Allow-Headers': true,
+                    'method.response.header.Access-Control-Allow-Methods': true,
+                    'method.response.header.Access-Control-Allow-Origin': true,
+                },
+            }]
+        })
+    }
