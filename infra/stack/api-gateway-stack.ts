@@ -185,4 +185,11 @@ def handle(event, context):
             integrationResponses: [{
                 statusCode: '200',
                 responseParameters: {
-                    'method.response.header.Access-Contr
+                    'method.response.header.Access-Control-Allow-Headers': "'Content-Type,X-Amz-Date,Authorization,X-Api-Key,X-Amz-Security-Token'",
+                    'method.response.header.Access-Control-Allow-Origin': "'*'",
+                    'method.response.header.Access-Control-Allow-Methods': "'OPTIONS,POST'",
+                },
+            }],
+            passthroughBehavior: apigateway.PassthroughBehavior.NEVER,
+            requestTemplates: {
+     
