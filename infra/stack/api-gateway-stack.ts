@@ -205,3 +205,21 @@ def handle(event, context):
             }]
         })
     }
+
+    private nagSuppressIAM5(role: iam.IRole) {
+        NagSuppressions.addResourceSuppressions(
+            role,
+            [
+                {
+                    id: 'AwsSolutions-IAM5',
+                    reason: `Suppress all AwsSolutions-IAM5 findings.`,
+                },
+            ],
+            true
+        );
+    }
+
+    private nagSuppressCOG2(resource: Construct) {
+        NagSuppressions.addResourceSuppressions(
+            resource,
+            [
