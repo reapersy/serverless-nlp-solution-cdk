@@ -223,3 +223,12 @@ def handle(event, context):
         NagSuppressions.addResourceSuppressions(
             resource,
             [
+                {
+                    id: 'AwsSolutions-COG2',
+                    reason: `Suppress all AwsSolutions-COG2 findings.`,
+                },
+            ],
+            true
+        );
+    }
+}
