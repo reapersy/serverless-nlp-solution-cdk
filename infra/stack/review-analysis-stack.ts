@@ -247,3 +247,245 @@ export class ReviewAnalysisStack extends base.BaseStack {
         });
         hoseRole.addManagedPolicy({ managedPolicyArn: 'arn:aws:iam::aws:policy/service-role/AWSGlueServiceRole' });
         hoseRole.addManagedPolicy({ managedPolicyArn: 'arn:aws:iam::aws:policy/AWSLambda_FullAccess' });
+        hoseRole.addManagedPolicy({ managedPolicyArn: 'arn:aws:iam::aws:policy/AmazonKinesisFullAccess' });
+        hoseRole.addToPolicy(new iam.PolicyStatement({
+            resources: ['*'],
+            actions: ['kms:*'],
+        }));
+        hoseRole.addToPolicy(new iam.PolicyStatement({
+            resources: ['*'],
+            actions: ['logs:*'],
+        }));
+        hoseRole.addToPolicy(new iam.PolicyStatement({
+            resources: ['*'],
+            actions: ['s3:*'],
+        }));
+
+        return hoseRole;
+    }
+
+    private createAthenaQueriesSentiment(config: AthenaConfig, athenaWorkGroup: athena.CfnWorkGroup, glueDatabase: glue.Database, glueTable: glue.Table, backendTablePartitionKey: string, backendTableSortKey: string) {
+        const databaseTableName = `"${glueDatabase.databaseName}"."${glueTable.tableName}"`;
+        
+        const sentimentTableName = config.AtheanQuerySentiment;
+        const athenaQuerySentiment = new athena.CfnNamedQuery(this, `create-${sentimentTableName}`, {
+            name: `create-${sentimentTableName}`,
+            workGroup: athenaWorkGroup.name,
+            database: glueDatabase.databaseName,
+            queryString: `CREATE TABLE "${sentimentTableName}" AS
+                SELECT ${backendTablePartitionKey}, ${backendTableSortKey}, timestamp,
+                sentiment.sentiment as sentiment,
+                sentiment.sentimentscore.mixed AS mixed,
+                sentiment.sentimentscore.negative AS negative,
+                sentiment.sentimentscore.neutral AS neutral,
+                sentiment.sentimentscore.positive AS positive
+                FROM ${databaseTableName};`
+        });
+        athenaQuerySentiment.addDependsOn(athenaWorkGroup);
+
+        const athenaQuerySentimentGroupby = new athena.CfnNamedQuery(this, `group-by-${sentimentTableName}`, {
+            name: `group-by-${sentimentTableName}`,
+            workGroup: athenaWorkGroup.name,
+            database: glueDatabase.databaseName,
+            queryString: `SELECT sentiment, count(${backendTableSortKey}) as number 
+                FROM ${sentimentTableName};`
+        });
+        athenaQuerySentimentGroupby.addDependsOn(athenaWorkGroup);
+    }
+
+    private createAthenaQueriesEntities(config: AthenaConfig, athenaWorkGroup: athena.CfnWorkGroup, glueDatabase: glue.Database, glueTable: glue.Table, backendTablePartitionKey: string, backendTableSortKey: string) {
+        const databaseTableName = `"${glueDatabase.databaseName}"."${glueTable.tableName}"`;
+        
+        const entitiesTableName = config.AtheanQueryEntities;
+        const entitiesTempTableName = `temp-${entitiesTableName}`
+        const athenaQueryEntitiesTemp = new athena.CfnNamedQuery(this, `create-${entitiesTempTableName}`, {
+            name: `create-${entitiesTempTableName}`,
+            workGroup: athenaWorkGroup.name,
+            database: glueDatabase.databaseName,
+            queryString: `CREATE TABLE "${entitiesTempTableName}" AS
+                SELECT ${backendTablePartitionKey}, ${backendTableSortKey}, sentiment.sentiment as sentiment, nested FROM ${databaseTableName}
+                CROSS JOIN UNNEST(entities) as t(nested);`
+        });
+        athenaQueryEntitiesTemp.addDependsOn(athenaWorkGroup);
+
+        const athenaQueryEntities = new athena.CfnNamedQuery(this, `create-${entitiesTableName}`, {
+            name: `create-${entitiesTableName}`,
+            workGroup: athenaWorkGroup.name,
+            database: glueDatabase.databaseName,
+            queryString: `CREATE TABLE "${entitiesTableName}" AS
+                SELECT ${backendTablePartitionKey}, ${backendTableSortKey}, sentiment,
+                nested.beginoffset AS beginoffset,
+                nested.endoffset AS endoffset,
+                nested.text AS text,
+                nested.score AS score,
+                nested.type AS category
+                FROM "${entitiesTempTableName}";`
+        });
+        athenaQueryEntities.addDependsOn(athenaWorkGroup);
+        athenaQueryEntities.addDependsOn(athenaQueryEntitiesTemp);
+    }
+
+    private createAthenaQueriesSyntax(config: AthenaConfig, athenaWorkGroup: athena.CfnWorkGroup, glueDatabase: glue.Database, glueTable: glue.Table, backendTablePartitionKey: string, backendTableSortKey: string) {
+        const databaseTableName = `"${glueDatabase.databaseName}"."${glueTable.tableName}"`;
+        
+        const syntaxTableName = config.AtheanQuerySyntax
+        const syntaxTempTableName = `temp-${syntaxTableName}`
+        const athenaQuerySyntaxTemp = new athena.CfnNamedQuery(this, `create-${syntaxTempTableName}`, {
+            name: `create-${syntaxTempTableName}`,
+            workGroup: athenaWorkGroup.name,
+            database: glueDatabase.databaseName,
+            queryString: `CREATE TABLE "${syntaxTempTableName}" AS
+                SELECT ${backendTablePartitionKey}, ${backendTableSortKey}, sentiment.sentiment as sentiment, nested FROM ${databaseTableName}
+                CROSS JOIN UNNEST(syntax) as t(nested);`
+        });
+        athenaQuerySyntaxTemp.addDependsOn(athenaWorkGroup);
+
+        const athenaQuerySyntax = new athena.CfnNamedQuery(this, `create-${syntaxTableName}`, {
+            name: `create-${syntaxTableName}`,
+            workGroup: athenaWorkGroup.name,
+            database: glueDatabase.databaseName,
+            queryString: `CREATE TABLE "${syntaxTableName}" AS
+                SELECT ${backendTablePartitionKey}, ${backendTableSortKey}, sentiment,
+                nested.beginoffset AS beginoffset,
+                nested.endoffset AS endoffset,
+                nested.text AS text,
+                nested.partofspeech.score AS score,
+                nested.partofspeech.tag AS tag
+                FROM "${syntaxTempTableName}"
+                WHERE nested.partofspeech.tag = 'ADJ' OR nested.partofspeech.tag = 'ADV';`
+        });
+        athenaQuerySyntax.addDependsOn(athenaWorkGroup);
+        athenaQuerySyntax.addDependsOn(athenaQuerySyntaxTemp);
+    }
+
+    private loadTableSchemaColumns(partitionKey: string, sortKey: string): glue.Column[] {
+        return [
+            {
+                name: partitionKey,
+                type: glue.Schema.STRING,
+            }, {
+                name: sortKey,
+                type: glue.Schema.STRING,
+            }, {
+                name: 'Timestamp',
+                type: glue.Schema.TIMESTAMP,
+            }, {
+                name: 'Review',
+                type: glue.Schema.STRING,
+            }, {
+                name: 'Sentiment',
+                type: glue.Schema.struct([
+                    {
+                        name: 'Sentiment',
+                        type: glue.Schema.STRING,
+                    }, {
+                        name: 'SentimentScore',
+                        type: glue.Schema.struct([
+                            {
+                                name: 'Mixed',
+                                type: glue.Schema.DOUBLE,
+                            },
+                            {
+                                name: 'Negative',
+                                type: glue.Schema.DOUBLE,
+                            },
+                            {
+                                name: 'Neutral',
+                                type: glue.Schema.DOUBLE,
+                            },
+                            {
+                                name: 'Positive',
+                                type: glue.Schema.DOUBLE,
+                            }
+                        ])
+                    }
+                ]),
+            }, {
+                name: 'Entities',
+                type: glue.Schema.array(glue.Schema.struct([
+                    {
+                        name: 'Score',
+                        type: glue.Schema.DOUBLE,
+                    }, {
+                        name: 'Type',
+                        type: glue.Schema.STRING
+                    }, {
+                        name: 'Text',
+                        type: glue.Schema.STRING
+                    }, {
+                        name: 'BeginOffset',
+                        type: glue.Schema.INTEGER
+                    }, {
+                        name: 'EndOffset',
+                        type: glue.Schema.INTEGER
+                    },
+                ]))
+            }, {
+                name: 'Syntax',
+                type: glue.Schema.array(glue.Schema.struct([
+                    {
+                        name: 'TokenId',
+                        type: glue.Schema.INTEGER
+                    }, {
+                        name: 'Text',
+                        type: glue.Schema.STRING
+                    }, {
+                        name: 'BeginOffset',
+                        type: glue.Schema.INTEGER
+                    }, {
+                        name: 'EndOffset',
+                        type: glue.Schema.INTEGER
+                    }, {
+                        name: 'PartOfSpeech',
+                        type: glue.Schema.struct([
+                            {
+                                name: 'Score',
+                                type: glue.Schema.DOUBLE,
+                            }, {
+                                name: 'Tag',
+                                type: glue.Schema.STRING
+                            }
+                        ])
+                    }
+                ]))
+            }
+        ];
+    }
+
+    private nagSuppress() {
+        NagSuppressions.addStackSuppressions(this, [
+            {
+                id: 'AwsSolutions-S1',
+                reason: 'Demonstrate a stack level suppression.'
+            },
+            {
+                id: 'AwsSolutions-S2',
+                reason: 'Demonstrate a stack level suppression.'
+            },
+            {
+                id: 'AwsSolutions-IAM4',
+                reason: 'Demonstrate a stack level suppression.'
+            },
+            {
+                id: 'AwsSolutions-IAM5',
+                reason: 'Demonstrate a stack level suppression.'
+            },
+            {
+                id: 'AwsSolutions-SQS3',
+                reason: 'Demonstrate a stack level suppression.'
+            },
+            {
+                id: 'AwsSolutions-SQS4',
+                reason: 'Demonstrate a stack level suppression.'
+            },
+            {
+                id: 'AwsSolutions-ATH1',
+                reason: 'Demonstrate a stack level suppression.'
+            },
+            {
+                id: 'AwsSolutions-KDF1',
+                reason: 'Demonstrate a stack level suppression.'
+            },
+        ]);
+    }
+}
