@@ -159,3 +159,15 @@ export class AppContext {
                 }, appConfig);
     
                 console.info(`[INFO] updateContextArgs: Updated ${key} = ${oldValue}-->${newValue}`);
+            }
+        }
+    }
+
+    private addPrefixIntoStackName(appConfig: any, projectPrefix: string) {
+        for (const key in appConfig.Stack) {
+            const stackOriginalName = appConfig.Stack[key].Name;
+            appConfig.Stack[key].ShortStackName = stackOriginalName;
+            appConfig.Stack[key].Name = `${projectPrefix}-${stackOriginalName}`;
+        }
+    }
+}
