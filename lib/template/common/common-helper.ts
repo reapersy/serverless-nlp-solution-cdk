@@ -22,4 +22,10 @@ import * as ssm from 'aws-cdk-lib/aws-ssm'
 
 
 export interface ICommonHelper {
-    findEnumType<T extends object>(enumType: T, target: string): T
+    findEnumType<T extends object>(enumType: T, target: string): T[keyof T];
+    exportOutput(key: string, value: string, prefixEnable?: boolean, prefixCustomName?: string): void;
+    putParameter(paramKey: string, paramValue: string, prefixEnable?: boolean, prefixCustomName?: string): string;
+    getParameter(paramKey: string, prefixEnable?: boolean, prefixCustomName?: string): string;
+    putVariable(variableKey: string, variableValue: string): void;
+    getVariable(variableKey: string): string;
+    withStackName(baseNam
