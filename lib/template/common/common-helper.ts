@@ -43,4 +43,17 @@ export interface CommonHelperProps {
 export class CommonHelper implements ICommonHelper {
     protected stackName: string;
     protected projectPrefix: string;
-    protected props: CommonHelper
+    protected props: CommonHelperProps;
+
+    constructor(props: CommonHelperProps) {
+        this.stackName = props.stackName;
+        this.props = props;
+        this.projectPrefix = props.projectPrefix;
+    }
+
+    public findEnumType<T extends object>(enumType: T, target: string): T[keyof T] {
+        type keyType = keyof typeof enumType;
+
+        const keyInString = Object.keys(enumType).find(key =>
+            // console.log(`${key} = ${enumType[key as keyof typeof enumType]}`);
+            // (<an
