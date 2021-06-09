@@ -56,4 +56,15 @@ export class CommonHelper implements ICommonHelper {
 
         const keyInString = Object.keys(enumType).find(key =>
             // console.log(`${key} = ${enumType[key as keyof typeof enumType]}`);
-            // (<an
+            // (<any>EnumType)['StringKeyofEnumType']
+            target == `${enumType[key as keyof typeof enumType]}` as string
+        );
+
+        const key = keyInString as keyType;
+        return enumType[key];
+    }
+
+    public exportOutput(key: string, value: string, prefixEnable=true, prefixCustomName?: string) {
+        if (prefixEnable) {
+            const prefix = prefixCustomName ? prefixCustomName : this.projectPrefix;
+            new cdk.CfnOutput(this.props.construct, `Outp
