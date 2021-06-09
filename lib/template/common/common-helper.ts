@@ -67,4 +67,18 @@ export class CommonHelper implements ICommonHelper {
     public exportOutput(key: string, value: string, prefixEnable=true, prefixCustomName?: string) {
         if (prefixEnable) {
             const prefix = prefixCustomName ? prefixCustomName : this.projectPrefix;
-            new cdk.CfnOutput(this.props.construct, `Outp
+            new cdk.CfnOutput(this.props.construct, `Output-${key}`, {
+                exportName: `${prefix}-${key}`,
+                value: value
+            });
+        } else {
+            new cdk.CfnOutput(this.props.construct, `Output-${key}`, {
+                exportName: key,
+                value: value
+            });
+        }
+    }
+
+    public putParameter(paramKey: string, paramValue: string, prefixEnable=true, prefixCustomName?: string): string {
+        if (prefixEnable) {
+            const p
