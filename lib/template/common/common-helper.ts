@@ -81,4 +81,14 @@ export class CommonHelper implements ICommonHelper {
 
     public putParameter(paramKey: string, paramValue: string, prefixEnable=true, prefixCustomName?: string): string {
         if (prefixEnable) {
-            const p
+            const paramKeyWithPrefix = prefixCustomName ? `${prefixCustomName}-${paramKey}` : `${this.projectPrefix}-${paramKey}`;
+
+            new ssm.StringParameter(this.props.construct, paramKey, {
+                parameterName: paramKeyWithPrefix,
+                stringValue: paramValue,
+            });
+        } else {
+            new ssm.StringParameter(this.props.construct, paramKey, {
+                parameterName: paramKey,
+                stringValue: paramValue,
+            
