@@ -121,4 +121,11 @@ export class CommonHelper implements ICommonHelper {
         return this.props.variables[variableKey];
     }
 
-    public withStackName(base
+    public withStackName(baseName: string, delimiter='-'): string {
+        return `${this.stackName}${delimiter}${baseName}`;
+    }
+
+    public withProjectPrefix(baseName: string, delimiter='-'): string {
+        return `${this.projectPrefix}${delimiter}${baseName}`;
+    }
+}
