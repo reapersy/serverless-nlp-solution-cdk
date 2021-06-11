@@ -103,4 +103,22 @@ export class CommonHelper implements ICommonHelper {
 
             return ssm.StringParameter.valueForStringParameter(
                 this.props.construct,
-                paramKeyWithPr
+                paramKeyWithPrefix
+            );
+        } else {
+            return ssm.StringParameter.valueForStringParameter(
+                this.props.construct,
+                paramKey
+            );
+        }
+    }
+
+    public putVariable(variableKey: string, variableValue: string) {
+        this.props.variables[variableKey] = variableValue;
+    }
+
+    public getVariable(variableKey: string): string {
+        return this.props.variables[variableKey];
+    }
+
+    public withStackName(base
