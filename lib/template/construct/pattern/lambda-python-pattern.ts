@@ -19,4 +19,18 @@
 import * as cdk from 'aws-cdk-lib';
 import { Construct } from 'constructs';
 import * as lambda from 'aws-cdk-lib/aws-lambda';
-import * as iam from 'aws-cdk
+import * as iam from 'aws-cdk-lib/aws-iam';
+import * as s3 from 'aws-cdk-lib/aws-s3';
+import { S3EventSource } from 'aws-cdk-lib/aws-lambda-event-sources';
+
+import { BaseConstruct, ConstructCommonProps } from '../base/base-construct';
+
+export interface LambdaSimplePatternProps extends ConstructCommonProps {
+    baseName: string;
+    lambdaPath: string;
+    policies: string[] | iam.PolicyStatement[];
+    handler?: string;
+    environments?: any;
+    timeout?: cdk.Duration;
+    bucket?: s3.Bucket;
+ 
