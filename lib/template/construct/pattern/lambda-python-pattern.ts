@@ -33,4 +33,16 @@ export interface LambdaSimplePatternProps extends ConstructCommonProps {
     environments?: any;
     timeout?: cdk.Duration;
     bucket?: s3.Bucket;
- 
+    layerArns?: string[];
+    bucketPrefix?: string[];
+    bucketSuffix?: string[];
+}
+
+export class LambdaSimplePattern extends BaseConstruct {
+    public readonly lambdaFunction: lambda.Function;
+    public readonly lambdaRole: iam.Role;
+
+    constructor(scope: Construct, id: string, props: LambdaSimplePatternProps) {
+        super(scope, id, props);
+
+        const lambdaName: string = `${props.projectPrefix}-${props.bas
