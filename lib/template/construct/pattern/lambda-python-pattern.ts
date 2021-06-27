@@ -45,4 +45,12 @@ export class LambdaSimplePattern extends BaseConstruct {
     constructor(scope: Construct, id: string, props: LambdaSimplePatternProps) {
         super(scope, id, props);
 
-        const lambdaName: string = `${props.projectPrefix}-${props.bas
+        const lambdaName: string = `${props.projectPrefix}-${props.baseName}-Lambda`;
+        const roleName: string = `${props.projectPrefix}-${props.baseName}-Lambda-Role`;
+
+        this.lambdaRole = this.createRole(roleName, props.policies);
+        this.lambdaFunction = this.createLambda(lambdaName, props.lambdaPath, this.lambdaRole, props);
+    }
+
+    private createLambda(lambdaName: string, lambdaPath: string, lambdaRole: iam.Role, props: LambdaSimplePatternProps): lambda.Function {
+   
