@@ -53,4 +53,11 @@ export class LambdaSimplePattern extends BaseConstruct {
     }
 
     private createLambda(lambdaName: string, lambdaPath: string, lambdaRole: iam.Role, props: LambdaSimplePatternProps): lambda.Function {
-   
+        var layers = this.loadLayers(lambdaName, props.layerArns!);
+
+        const lambdaFunction = new lambda.Function(this, lambdaName, {
+            functionName: lambdaName,
+            code: lambda.Code.fromAsset(lambdaPath),
+            handler: props.handler != undefined ? props.handler : 'handler.handle',
+            runtime: lambda.Runtime.PYTHON_3_9,
+            timeout: props.timeout != undefined ? props.timeout : cdk.Duration.se
