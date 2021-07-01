@@ -60,4 +60,14 @@ export class LambdaSimplePattern extends BaseConstruct {
             code: lambda.Code.fromAsset(lambdaPath),
             handler: props.handler != undefined ? props.handler : 'handler.handle',
             runtime: lambda.Runtime.PYTHON_3_9,
-            timeout: props.timeout != undefined ? props.timeout : cdk.Duration.se
+            timeout: props.timeout != undefined ? props.timeout : cdk.Duration.seconds(60 * 3),
+            role: lambdaRole,
+            environment: props.environments,
+            layers: layers.length > 0 ? layers : undefined,
+        });
+
+        if (props.bucket != undefined) {
+            const filterList: any[] = [];
+            if (props.bucketPrefix != undefined && props.bucketPrefix.length > 0) {
+                for (var item of props.bucketPrefix) {
+                    lambdaFunction.addE
