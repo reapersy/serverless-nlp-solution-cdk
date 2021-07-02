@@ -70,4 +70,12 @@ export class LambdaSimplePattern extends BaseConstruct {
             const filterList: any[] = [];
             if (props.bucketPrefix != undefined && props.bucketPrefix.length > 0) {
                 for (var item of props.bucketPrefix) {
-                    lambdaFunction.addE
+                    lambdaFunction.addEventSource(new S3EventSource(props.bucket, {
+                        events: [s3.EventType.OBJECT_CREATED_PUT, s3.EventType.OBJECT_CREATED_COPY],
+                        filters: [{ prefix: item }]
+                    }));
+                }
+            }
+            if (props.bucketSuffix != undefined && props.bucketSuffix.length > 0) {
+                for (var item of props.bucketSuffix) {
+                    lambdaFunction.addEventSource(new S3EventSource(props.bu
