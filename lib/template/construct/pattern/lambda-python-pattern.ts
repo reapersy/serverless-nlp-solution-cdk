@@ -78,4 +78,17 @@ export class LambdaSimplePattern extends BaseConstruct {
             }
             if (props.bucketSuffix != undefined && props.bucketSuffix.length > 0) {
                 for (var item of props.bucketSuffix) {
-                    lambdaFunction.addEventSource(new S3EventSource(props.bu
+                    lambdaFunction.addEventSource(new S3EventSource(props.bucket, {
+                        events: [s3.EventType.OBJECT_CREATED_PUT, s3.EventType.OBJECT_CREATED_COPY],
+                        filters: [{ suffix: item }]
+                    }));
+                }
+            }
+        }
+
+        return lambdaFunction;
+    }
+
+    private createRole(roleName: string, policies: string[] | iam.PolicyStatement[]): iam.Role {
+        const role = new iam.Role(this, roleName, {
+           
