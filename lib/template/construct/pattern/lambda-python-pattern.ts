@@ -91,4 +91,14 @@ export class LambdaSimplePattern extends BaseConstruct {
 
     private createRole(roleName: string, policies: string[] | iam.PolicyStatement[]): iam.Role {
         const role = new iam.Role(this, roleName, {
-           
+            roleName: roleName,
+            assumedBy: new iam.ServicePrincipal('lambda.amazonaws.com'),
+        });
+
+        role.addManagedPolicy({ managedPolicyArn: 'arn:aws:iam::aws:policy/service-role/AWSLambdaBasicExecutionRole' });
+        for (var item of policies) {
+            if (item instanceof iam.PolicyStatement) {
+                role.addToPolicy(item);
+            } else {
+                role.addManagedPolicy({ managedPolicyArn: item });
+   
