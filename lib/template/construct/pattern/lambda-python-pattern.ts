@@ -118,4 +118,6 @@ export class LambdaSimplePattern extends BaseConstruct {
             }
         }
 
-        return lay
+        return layers;
+    }
+}
