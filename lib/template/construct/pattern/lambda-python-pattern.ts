@@ -101,4 +101,21 @@ export class LambdaSimplePattern extends BaseConstruct {
                 role.addToPolicy(item);
             } else {
                 role.addManagedPolicy({ managedPolicyArn: item });
-   
+            }
+        }
+
+        return role;
+    }
+
+    private loadLayers(lambdaName: string, layerArns: string[]): any[] {
+        let layers = [];
+
+        if (layerArns != undefined && layerArns.length > 0) {
+            let index = 0;
+            for (let arn of layerArns) {
+                index++;
+                layers.push(lambda.LayerVersion.fromLayerVersionArn(this, `${lambdaName}-${index}-layer`, arn))
+            }
+        }
+
+        return lay
