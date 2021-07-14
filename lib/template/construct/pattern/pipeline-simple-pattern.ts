@@ -449,3 +449,87 @@ export class PipelineSimplePattern extends BaseConstruct {
                     ]
                 }
             });
+        return buildSpec;
+    }
+
+    private createActionDeployS3Bucket(actionName: string, props: DeployKindS3BucketProps, runOrder?: number): codepipeline.IAction {
+        const bucket = s3.Bucket.fromBucketAttributes(this, `${actionName}DeployS3Bucket`, {
+            bucketName: props.BucketName,
+            account: props.Account,
+            region: props.Region
+        });
+
+        const action = new codepipeline_actions.S3DeployAction({
+            actionName: actionName,
+            input: this.buildOutput,
+            bucket
+        });
+
+        return action;
+    }
+
+    private createInstallCommands(assumeRoleEnable: boolean, setupEnable: boolean): string[] {
+        let commands: string[] = [];
+
+        const assumeRoleCommands = [
+            'creds=$(mktemp -d)/creds.json',
+            'aws sts assume-role --role-arn $ASSUME_ROLE_ARN --role-session-name assume_role > $creds',
+            `export AWS_ACCESS_KEY_ID=$(cat $creds | grep "AccessKeyId" | cut -d '"' -f 4)`,
+            `export AWS_SECRET_ACCESS_KEY=$(cat $creds | grep "SecretAccessKey" | cut -d '"' -f 4)`,
+            `export AWS_SESSION_TOKEN=$(cat $creds | grep "SessionToken" | cut -d '"' -f 4)`,
+        ]
+
+        const setupInstallCommands = [
+            `npm install -g aws-cdk${CDK_VER}`,
+            'npm install'
+        ]
+
+        if (assumeRoleEnable) {
+            commands = commands.concat(assumeRoleCommands);
+        }
+        if (setupEnable) {
+            commands = commands.concat(setupInstallCommands);
+        }
+
+        return commands;
+    }
+
+    private getDeployCommonPolicy(): iam.PolicyStatement {
+        const statement = new iam.PolicyStatement();
+        statement.addActions(
+            "cloudformation:*",
+            "lambda:*",
+            "s3:*",
+            "ssm:*",
+            "iam:PassRole",
+            "kms:*",
+            "events:*",
+            "sts:AssumeRole"
+        );
+        statement.addResources("*");
+        return statement;
+    }
+
+    private registerEventLambda(actionProps: ActionProps, action: codepipeline.IAction) {
+        if (actionProps.EventStateLambda
+            && actionProps.EventStateLambda.CodePath && actionProps.EventStateLambda.CodePath.length > 0
+            && actionProps.EventStateLambda.Handler && actionProps.EventStateLambda.Handler.length > 0) {
+
+            action?.onStateChange(
+                `${actionProps.Stage}-${actionProps.Name}-EventState`,
+                new targets.LambdaFunction(this.createEventStateLambda(`${actionProps.Stage}-${actionProps.Name}-EventStateLambda`,
+                    actionProps.EventStateLambda)));
+        }
+    }
+
+    private createEventStateLambda(baseName: string, props: EventStateLambdaProps): lambda.Function {
+        const func = new lambda.Function(this, baseName, {
+            functionName: `${this.projectPrefix}-${baseName}`,
+            runtime: new lambda.Runtime(props.Runtime),
+            code: lambda.Code.fromAsset(props.CodePath),
+            handler: props.Handler
+        })
+
+        return func;
+    }
+}
