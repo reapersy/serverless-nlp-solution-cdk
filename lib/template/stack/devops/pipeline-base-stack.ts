@@ -46,4 +46,13 @@ export abstract class PipelineBaseStack extends base.BaseStack {
         this.simplePipeline = new pipeline.PipelineSimplePattern(this, 'SimplePipeline', {
             pipelineName,
             actionFlow,
-            stac
+            stackConfig,
+            projectPrefix: this.projectPrefix,
+            stackName: this.stackName,
+            env: this.commonProps.env!,
+            variables: this.commonProps.variables
+        });
+
+        this.onPostConstructor(this.simplePipeline);
+    }
+}
