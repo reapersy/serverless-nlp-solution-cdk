@@ -33,4 +33,17 @@ export abstract class PipelineBaseStack extends base.BaseStack {
     abstract onPipelineName(): string;
     abstract onActionFlow(): pipeline.ActionProps[];
     abstract onPostConstructor(pipeline: pipeline.PipelineSimplePattern): void;
-    protect
+    protected onBuildPolicies(): iam.PolicyStatement[]|undefined {
+        return undefined
+    }
+
+    constructor(appContext: AppContext, stackConfig: StackConfig) {
+        super(appContext, stackConfig);
+
+        const pipelineName = this.onPipelineName();
+        const actionFlow = this.onActionFlow();
+
+        this.simplePipeline = new pipeline.PipelineSimplePattern(this, 'SimplePipeline', {
+            pipelineName,
+            actionFlow,
+            stac
