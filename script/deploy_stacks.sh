@@ -15,4 +15,21 @@ echo $APP_CONFIG
 echo $PROJECT_PREFIX
 # echo $ACCOUNT
 echo $REGION
-ech
+echo $PROFILE_NAME
+if [ -z "$PROFILE_NAME" ]; then
+    echo "Project.Profile is empty, default AWS Profile is used"
+else
+    if [ -z "$ON_PIPELINE" ]; then
+        echo "$PROFILE_NAME AWS Profile is used"
+        export AWS_PROFILE=$PROFILE_NAME
+    else
+        echo "Now on CodePipeline, default AWS Profile is used"
+    fi
+fi
+echo .
+echo .
+
+
+echo ==--------CDKVersionCheck---------==
+alias cdk-local="./node_modules/.bin/cdk"
+cdk --v
