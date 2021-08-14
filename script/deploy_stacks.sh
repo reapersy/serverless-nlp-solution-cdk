@@ -32,4 +32,18 @@ echo .
 
 echo ==--------CDKVersionCheck---------==
 alias cdk-local="./node_modules/.bin/cdk"
-cdk --v
+cdk --version
+cdk-local --version
+echo .
+echo .
+
+echo ==--------ListStacks---------==
+cdk-local list
+echo .
+echo .
+
+echo ==--------DeployStacksStepByStep---------==
+cdk-local deploy *-ReviewBackendStack --require-approval never
+cdk-local deploy *-ApiGatewayStack --require-approval never --outputs-file script/output/ApiGatewayStack.json
+cdk-local deploy *-ReviewAnalysisStack --require-approval never --outputs-file script/output/ReviewAnalysisStack.json
+cdk-local deploy *-ReviewDashboardStac
