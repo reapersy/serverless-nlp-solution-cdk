@@ -46,4 +46,11 @@ echo ==--------DeployStacksStepByStep---------==
 cdk-local deploy *-ReviewBackendStack --require-approval never
 cdk-local deploy *-ApiGatewayStack --require-approval never --outputs-file script/output/ApiGatewayStack.json
 cdk-local deploy *-ReviewAnalysisStack --require-approval never --outputs-file script/output/ReviewAnalysisStack.json
-cdk-local deploy *-ReviewDashboardStac
+cdk-local deploy *-ReviewDashboardStack --require-approval never
+
+
+echo .
+echo .
+
+echo .
+echo completed
