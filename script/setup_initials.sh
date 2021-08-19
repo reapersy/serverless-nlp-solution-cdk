@@ -52,3 +52,4 @@ echo ==--------BootstrapCDKEnvironment---------==
 cdk-local bootstrap aws://$ACCOUNT/$REGION
 echo .
 echo .
+
