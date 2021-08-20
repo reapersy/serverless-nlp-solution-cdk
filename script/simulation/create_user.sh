@@ -17,4 +17,6 @@ aws cognito-idp admin-create-user \
 # Step2: confirm a temporary user
 aws cognito-idp admin-set-user-password \
   --user-pool-id $USER_POOL_ID \
-  --
+  --username $USER_NAME \
+  --password $PASS_WORD \
+  --permanent
