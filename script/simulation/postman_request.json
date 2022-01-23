@@ -1,1 +1,13 @@
-# https://aws.plainenglish.io/postman-automate-generate-amazon-cog
+# https://aws.plainenglish.io/postman-automate-generate-amazon-cognito-token-11c0d20af21c
+
+var clientId = pm.environment.get("cognitoClientId");
+var username = pm.environment.get("cognitoUserName");
+var password = pm.environment.get("cognitoUserPassword");
+var region = pm.environment.get("cognitoRegion");
+
+pm.sendRequest({
+    url: "https://cognito-idp." + region + ".amazonaws.com/",
+    method: 'POST',
+    header: {
+            'X-Amz-Target':   'AWSCognitoIdentityProviderService.InitiateAuth',
+            'Content-Type': 'applicat
