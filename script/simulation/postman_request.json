@@ -10,4 +10,17 @@ pm.sendRequest({
     method: 'POST',
     header: {
             'X-Amz-Target':   'AWSCognitoIdentityProviderService.InitiateAuth',
-            'Content-Type': 'applicat
+            'Content-Type': 'application/x-amz-json-1.1'
+            },
+    body: {
+            mode: 'raw',
+            raw: JSON.stringify({
+                        "AuthParameters": {
+                        "USERNAME": username,
+                        "PASSWORD": password,
+                        },
+                        "AuthFlow": "USER_PASSWORD_AUTH",
+                        "ClientId": clientId
+            }),
+            options: {
+                raw: {
