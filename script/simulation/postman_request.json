@@ -24,3 +24,12 @@ pm.sendRequest({
             }),
             options: {
                 raw: {
+                    language: 'json'
+                }
+            }
+        }}, 
+    function (error, response) {
+        console.log(response.json());
+        pm.environment.set("cognitoAccessToken", response.json().AuthenticationResult.AccessToken);
+        pm.environment.set("cognitoIdToken", response.json().AuthenticationResult.IdToken);
+});
