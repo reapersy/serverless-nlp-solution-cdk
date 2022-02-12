@@ -33,3 +33,19 @@ def request_post(apigateway_url: str, token: str, payload: dict):
         }
     response = requests.request("POST", apigateway_url, data=json.dumps(payload), headers=headers)
     print('response===>', response)
+    
+
+def request_small_set(url: str, token: str, input_path: str, count):
+    with open(input_path) as f:
+        lines = f.readlines()
+        for index, line in enumerate(lines):
+            line = line.strip()
+            print(index, line)
+            
+            request_post(url, token, {
+                'Action': 'write',
+                'ProductId': 'id-001',
+                'Review': line
+            })
+            
+          
