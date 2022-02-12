@@ -20,4 +20,16 @@ def login(user_pool, username, password) -> str:
             'USERNAME': username,
             'PASSWORD': password
         },
-    
+        ClientId=user_pool
+    )
+    print('IdToken', response['AuthenticationResult']['IdToken'])
+    return response['AuthenticationResult']['IdToken']
+
+
+def request_post(apigateway_url: str, token: str, payload: dict):
+    headers = {
+        'content-type': "application/json", 
+        'Authorization': 'Bearer ' + token
+        }
+    response = requests.request("POST", apigateway_url, data=json.dumps(payload), headers=headers)
+    print('response===>', response)
