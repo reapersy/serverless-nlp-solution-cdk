@@ -48,4 +48,15 @@ def request_small_set(url: str, token: str, input_path: str, count):
                 'Review': line
             })
             
-          
+            if index == count:
+                break
+
+
+def request_large_set(url: str, token: str, input_path: str, product_id: str):
+    data = pd.read_csv(input_path, keep_default_na=False)
+    for index, row in data.iterrows():
+        if product_id == row['product_id']:
+            print(index, row['product_id'], row['review_body'])
+            request_post(url, token, {
+                'Action': 'write',
+                'ProductId': 'id-00
