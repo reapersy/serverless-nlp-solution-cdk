@@ -75,4 +75,15 @@ def parse_args():
     return args
 
 
-if __name__ == '__main__'
+if __name__ == '__main__':
+    args = parse_args()
+    
+    os.environ['AWS_PROFILE'] = args.profile
+    
+    token = login(args.pool, args.id, args.pw)
+    
+    for index in range(0, 1):
+        request_large_set(args.url, token, 'script/simulation/data/amazon-review-toy-B002LHA74O.csv', 'B002LHA74O')
+        print(f'[{index + 1}]-----------------------')
+        time.sleep(10)
+    
