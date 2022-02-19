@@ -59,4 +59,20 @@ def request_large_set(url: str, token: str, input_path: str, product_id: str):
             print(index, row['product_id'], row['review_body'])
             request_post(url, token, {
                 'Action': 'write',
-                'ProductId': 'id-00
+                'ProductId': 'id-001',
+                'Review': row['review_body']
+            })
+
+
+def parse_args():
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--profile', type=str)
+    parser.add_argument('--url', type=str)
+    parser.add_argument('--pool', type=str)
+    parser.add_argument('--id', type=str)
+    parser.add_argument('--pw', type=str)
+    args, _ = parser.parse_known_args()
+    return args
+
+
+if __name__ == '__main__'
