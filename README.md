@@ -4,4 +4,6 @@ This repository focuses on designing and implementing a Natural Language Process
 
 Detailed information on each solution feature, from Amazon Comprehend and AWS Serverless to AWS CDK, is provided. Extensive deployment procedures and guidance, including prerequisite installations, configurations, AWS CDK environment setup, stack deployments, and simulation instructions, have been included.
 
-This project covers a range of fe
+This project covers a range of features including Serverless Realtime Review API Service, Serverless Realtime Review Sentiment Analysis, Serverless Near Realtime Data Processing & Visualization, and Serverless System Monitoring Dashboard.
+
+A thorough implementation guide regarding CDK project has been provided. Additionally, step-by-step instructions on how to simulate this service is also given, covering User creation in Cognito, Review requests, 
